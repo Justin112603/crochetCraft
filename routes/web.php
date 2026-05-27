@@ -146,15 +146,7 @@ Route::middleware(['auth'])->group(function () {
 
 
 
-Route::get('/tinker', function () {
-
-    $user = User::create([
-        'name' => 'crochetCraft',
-        'email' => 'admin@crochetcraft.com',
-        'role' => 'admin',
-        'password' => Hash::make('Admin1234'),
-    ]);
-
-    return $user;
-});
+Route::get('/dashboard/stats', [DashboardController::class, 'stats'])
+    ->middleware(['auth'])
+    ->name('dashboard.stats');
 require __DIR__.'/auth.php';
