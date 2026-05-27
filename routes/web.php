@@ -149,4 +149,6 @@ Route::middleware(['auth'])->group(function () {
 Route::get('/dashboard/stats', [DashboardController::class, 'stats'])
     ->middleware(['auth'])
     ->name('dashboard.stats');
+    Route::get('/orders/{order}/cancel', [OrderController::class, 'cancel'])
+    ->name('orders.cancel');
 require __DIR__.'/auth.php';
