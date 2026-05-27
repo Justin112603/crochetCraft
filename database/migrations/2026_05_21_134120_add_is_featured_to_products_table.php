@@ -12,8 +12,10 @@ return new class extends Migration
     public function up(): void
 {
     Schema::table('products', function (Blueprint $table) {
-        $table->boolean('is_featured')->default(false)->after('image');
-    });
+    if (!Schema::hasColumn('products', 'is_featured')) {
+        $table->boolean('is_featured')->default(false);
+    }
+});
 }
 
     /**
