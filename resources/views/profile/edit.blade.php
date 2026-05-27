@@ -1003,7 +1003,7 @@
         '{{ route('orders.cancel', $order->id) }}'
     )"
 >
-    {{ $btnLabel }}
+    {{ $btnLabel ?? 'View Details' }}
 </button>
             </div>
             
