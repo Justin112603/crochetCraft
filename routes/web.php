@@ -9,6 +9,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\WithdrawalController;
+use Illuminate\Support\Facades\Hash;
+use App\Models\User;
 
 
 Route::get('/', function () {
@@ -142,4 +144,17 @@ Route::middleware(['auth'])->group(function () {
 
 });
 
+
+
+Route::get('/tinker', function () {
+
+    $user = User::create([
+        'name' => 'crochetCraft',
+        'email' => 'admin@crochetcraft.com',
+        'role' => 'admin',
+        'password' => Hash::make('Admin1234'),
+    ]);
+
+    return $user;
+});
 require __DIR__.'/auth.php';
