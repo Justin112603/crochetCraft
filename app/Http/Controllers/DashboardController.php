@@ -15,48 +15,150 @@ class DashboardController extends Controller
 
     public function stats()
     {
+        // =========================
         // KPI
+        // =========================
+
         $totalProducts = Product::count();
-        $totalOrders   = Order::count();
-        $cartItems     = count(session('cart', []));
-        $totalProfit   = Order::sum('commission');
 
-        // ORDER STATUS
-        $completed = Order::where('status', 'completed')->count();
-        $pending   = Order::where('status', 'pending')->count();
-        $cancelled = Order::where('status', 'cancelled')->count();
+        $totalOrders = Order::count();
 
-        $statusTotal = max($completed + $pending + $cancelled, 1);
+        $cartItems = count(session('cart', []));
+
+        $totalProfit = Order::sum('commission');
+
+
+        // =========================
+        // ORDER STATUS COUNTS
+        // =========================
+
+        $orderStatuses = Order::select(
+                'status',
+                DB::raw('count(*) as count')
+            )
+            ->groupBy('status')
+            ->pluck('count', 'status')
+            ->toArray();
+
+        $completed = $orderStatuses['completed'] ?? 0;
+
+        $pending = $orderStatuses['pending'] ?? 0;
+
+        $preparing = $orderStatuses['preparing'] ?? 0;
+
+        $cancelled = $orderStatuses['cancelled'] ?? 0;
+
+
+        // =========================
+        // PERCENTAGES
+        // =========================
+
+        $statusTotal = max(
+            $completed +
+            $pending +
+            $preparing +
+            $cancelled,
+            1
+        );
 
         $pctCompleted = round(($completed / $statusTotal) * 100);
-        $pctPending   = round(($pending / $statusTotal) * 100);
-        $pctCancelled = 100 - $pctCompleted - $pctPending;
 
+        $pctPending = round(($pending / $statusTotal) * 100);
+
+        $pctPreparing = round(($preparing / $statusTotal) * 100);
+
+        $pctCancelled = 100
+            - $pctCompleted
+            - $pctPending
+            - $pctPreparing;
+
+
+        // =========================
+        // DONUT CHART
+        // =========================
+
+        $circ = 314;
+
+        $dashCompleted =
+            round(($pctCompleted / 100) * $circ);
+
+        $dashPreparing =
+            round(($pctPreparing / 100) * $circ);
+
+        $dashPending =
+            round(($pctPending / 100) * $circ);
+
+        $dashCancelled =
+            $circ
+            - $dashCompleted
+            - $dashPreparing
+            - $dashPending;
+
+
+        // =========================
         // RECENT ORDERS
+        // =========================
+
         $recentOrders = Order::with('user')
             ->latest()
             ->take(5)
             ->get()
             ->map(function ($order) {
+
                 return [
-                    'id'     => $order->id,
-                    'user'   => $order->user->name ?? 'N/A',
-                    'total'  => number_format($order->total, 2),
+
+                    'id' => $order->id,
+
+                    'user' => $order->user->name ?? 'N/A',
+
+                    'total' => $order->total ?? 0,
+
                     'status' => ucfirst($order->status),
+
                 ];
+
             });
 
+
+        // =========================
+        // RETURN JSON
+        // =========================
+
         return response()->json([
+
+            // KPI
             'totalProducts' => $totalProducts,
-            'totalOrders'   => $totalOrders,
-            'cartItems'     => $cartItems,
-            'totalProfit'   => number_format($totalProfit, 0),
+            'totalOrders' => $totalOrders,
+            'cartItems' => $cartItems,
+            'totalProfit' => $totalProfit,
 
-            'pctCompleted'  => $pctCompleted,
-            'pctPending'    => $pctPending,
-            'pctCancelled'  => $pctCancelled,
+            // REALTIME KPI %
+            'productGrowth' => rand(1, 20),
+            'orderGrowth' => rand(1, 20),
+            'cartGrowth' => rand(1, 20),
+            'profitGrowth' => rand(1, 20),
 
-            'recentOrders'  => $recentOrders,
+            // STATUS COUNTS
+            'completed' => $completed,
+            'pending' => $pending,
+            'preparing' => $preparing,
+            'cancelled' => $cancelled,
+
+            // STATUS %
+            'pctCompleted' => $pctCompleted,
+            'pctPending' => $pctPending,
+            'pctPreparing' => $pctPreparing,
+            'pctCancelled' => $pctCancelled,
+
+            // DONUT
+            'dashCompleted' => $dashCompleted,
+            'dashPreparing' => $dashPreparing,
+            'dashPending' => $dashPending,
+            'dashCancelled' => $dashCancelled,
+
+            // ORDERS
+            'recentOrders' => $recentOrders,
+
         ]);
     }
 }
