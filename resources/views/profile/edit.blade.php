@@ -796,146 +796,436 @@
     </div>
 
     {{-- ── ORDER MODAL ── --}}
-    <div id="orderModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
-        <div class="modal-box">
+<div id="orderModal" class="modal-overlay" onclick="if(event.target===this)closeModal()">
 
-            <div class="modal-head">
-                <div>
-                    <div class="modal-tag">Order Details</div>
-                    <div class="serif" id="mOrderId" style="font-size:1.5rem;font-weight:600;color:#2e1a0e;"></div>
+    <div class="modal-box">
+
+        <div class="modal-head">
+
+            <div>
+                <div class="modal-tag">
+                    Order Details
                 </div>
-                <button class="modal-close" onclick="closeModal()">✕</button>
+
+                <div
+                    class="serif"
+                    id="mOrderId"
+                    style="font-size:1.5rem;font-weight:600;color:#2e1a0e;"
+                ></div>
             </div>
 
-            <div class="modal-body">
+            <button class="modal-close" onclick="closeModal()">
+                ✕
+            </button>
 
-                <div class="detail-grid">
-                    <div class="detail-chip">
-                        <div class="dc-lbl">Order Date</div>
-                        <div class="dc-val" id="mDate"></div>
-                    </div>
-                    <div class="detail-chip">
-                        <div class="dc-lbl">Payment</div>
-                        <div class="dc-val" id="mPayment" style="text-transform:uppercase;"></div>
-                    </div>
-                </div>
-
-                <div class="detail-chip" style="margin-bottom:18px;">
-                    <div class="dc-lbl" style="margin-bottom:8px;">Status</div>
-                    <div id="mStatus"></div>
-                </div>
-
-                <div class="modal-section">
-                    <div class="modal-section-title">Product</div>
-                    <div style="display:flex;gap:14px;align-items:center;">
-                        <img id="mImg" src=""
-                            style="width:72px;height:72px;object-fit:cover;border-radius:12px;border:1px solid #eee7da;">
-                        <div>
-                            <div id="mProduct" style="font-weight:600;color:#2e1a0e;font-size:15px;"></div>
-                            <div style="font-size:13px;color:#9d7d6a;margin-top:3px;">Qty: <span id="mQty"></span></div>
-                        </div>
-                    </div>
-                </div>
-
-                <div class="modal-section">
-                    <div class="modal-section-title">Customer</div>
-                    <div class="modal-row"><span class="modal-row-lbl">Name</span><span class="modal-row-val"
-                            id="mName"></span></div>
-                    <div class="modal-row"><span class="modal-row-lbl">Email</span><span class="modal-row-val"
-                            id="mEmail"></span></div>
-                    <div class="modal-row"><span class="modal-row-lbl">Phone</span><span class="modal-row-val"
-                            id="mPhone"></span></div>
-                    <div class="modal-row"><span class="modal-row-lbl">Address</span><span class="modal-row-val"
-                            id="mAddress" style="max-width:300px;text-align:right;"></span></div>
-                </div>
-
-                <div class="modal-section">
-                    <div class="modal-section-title">Payment Summary</div>
-                    <div class="modal-row"><span class="modal-row-lbl">Subtotal</span><span class="modal-row-val"
-                            id="mSubtotal"></span></div>
-                    <div class="modal-row"><span class="modal-row-lbl">Shipping</span><span
-                            class="modal-row-val">₱50.00</span></div>
-                    <div class="modal-total-row">
-                        <span style="font-size:15px;font-weight:600;color:#2e1a0e;">Total</span>
-                        <span class="serif" id="mTotal" style="font-size:1.4rem;font-weight:600;color:#c4693f;"></span>
-                    </div>
-                </div>
-
-            </div>
         </div>
+
+        <div class="modal-body">
+
+            <div class="detail-grid">
+
+                <div class="detail-chip">
+                    <div class="dc-lbl">
+                        Order Date
+                    </div>
+
+                    <div class="dc-val" id="mDate"></div>
+                </div>
+
+                <div class="detail-chip">
+                    <div class="dc-lbl">
+                        Payment
+                    </div>
+
+                    <div
+                        class="dc-val"
+                        id="mPayment"
+                        style="text-transform:uppercase;"
+                    ></div>
+                </div>
+
+            </div>
+
+            <div class="detail-chip" style="margin-bottom:18px;">
+
+                <div
+                    class="dc-lbl"
+                    style="margin-bottom:8px;"
+                >
+                    Status
+                </div>
+
+                <div id="mStatus"></div>
+
+            </div>
+
+            <div class="modal-section">
+
+                <div class="modal-section-title">
+                    Product
+                </div>
+
+                <div style="display:flex;gap:14px;align-items:center;">
+
+                    <img
+                        id="mImg"
+                        src=""
+                        style="
+                            width:72px;
+                            height:72px;
+                            object-fit:cover;
+                            border-radius:12px;
+                            border:1px solid #eee7da;
+                        "
+                    >
+
+                    <div>
+
+                        <div
+                            id="mProduct"
+                            style="
+                                font-weight:600;
+                                color:#2e1a0e;
+                                font-size:15px;
+                            "
+                        ></div>
+
+                        <div
+                            style="
+                                font-size:13px;
+                                color:#9d7d6a;
+                                margin-top:3px;
+                            "
+                        >
+                            Qty:
+                            <span id="mQty"></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <div class="modal-section">
+
+                <div class="modal-section-title">
+                    Customer
+                </div>
+
+                <div class="modal-row">
+                    <span class="modal-row-lbl">Name</span>
+                    <span class="modal-row-val" id="mName"></span>
+                </div>
+
+                <div class="modal-row">
+                    <span class="modal-row-lbl">Email</span>
+                    <span class="modal-row-val" id="mEmail"></span>
+                </div>
+
+                <div class="modal-row">
+                    <span class="modal-row-lbl">Phone</span>
+                    <span class="modal-row-val" id="mPhone"></span>
+                </div>
+
+                <div class="modal-row">
+                    <span class="modal-row-lbl">Address</span>
+
+                    <span
+                        class="modal-row-val"
+                        id="mAddress"
+                        style="max-width:300px;text-align:right;"
+                    ></span>
+                </div>
+
+            </div>
+
+            <div class="modal-section">
+
+                <div class="modal-section-title">
+                    Payment Summary
+                </div>
+
+                <div class="modal-row">
+                    <span class="modal-row-lbl">Subtotal</span>
+                    <span class="modal-row-val" id="mSubtotal"></span>
+                </div>
+
+                <div class="modal-row">
+                    <span class="modal-row-lbl">Shipping</span>
+                    <span class="modal-row-val">₱50.00</span>
+                </div>
+
+                <div class="modal-total-row">
+
+                    <span
+                        style="
+                            font-size:15px;
+                            font-weight:600;
+                            color:#2e1a0e;
+                        "
+                    >
+                        Total
+                    </span>
+
+                    <span
+                        class="serif"
+                        id="mTotal"
+                        style="
+                            font-size:1.4rem;
+                            font-weight:600;
+                            color:#c4693f;
+                        "
+                    ></span>
+
+                </div>
+
+            </div>
+
+            {{-- CANCEL BUTTON CONTAINER --}}
+            <div id="cancelOrderContainer">
+                <button
+    class="btn-sm"
+    onclick="openOrderModal(
+        '{{ $order->id }}',
+        '{{ $order->created_at->format('M d, Y h:i A') }}',
+        '{{ strtolower($order->status) }}',
+        '{{ number_format($order->total ?? 0, 2) }}',
+        '{{ number_format(($order->total ?? 0) + 50, 2) }}',
+        '{{ $order->payment_method ?? 'COD' }}',
+        '{{ asset('storage/' . ($order->product->image ?? 'products/default.png')) }}',
+        '{{ $order->product->name ?? 'Product' }}',
+        '{{ $order->quantity ?? 1 }}',
+        '{{ auth()->user()->name }}',
+        '{{ auth()->user()->email }}',
+        '{{ auth()->user()->phone ?? 'N/A' }}',
+        '{{ auth()->user()->address ?? 'N/A' }}',
+        '{{ route('orders.cancel', $order->id) }}'
+    )"
+>
+    {{ $btnLabel }}
+</button>
+            </div>
+            
+
+        </div>
+
     </div>
 
-    <script>
-        /* ── Panel switching ── */
-        function showPanel(id, btn) {
-            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById('panel-' + id).classList.add('active');
-            btn.classList.add('active');
-        }
+</div>
 
-        /* ── Toggle helper ── */
-        function toggleEl(id) {
-            const el = document.getElementById(id);
-            el.style.display = el.style.display === 'none' ? 'block' : 'none';
-        }
+<script>
 
-        /* ── Order modal ── */
-        const statusStyles = {
-            pending: { bg: 'rgba(245,158,11,.1)', color: '#f59e0b', label: 'Pending' },
-            preparing: { bg: 'rgba(59,130,246,.1)', color: '#3b82f6', label: 'Preparing' },
-            'out for delivery': { bg: 'rgba(168,85,247,.1)', color: '#a855f7', label: 'Out For Delivery' },
-            'product received': { bg: 'rgba(34,197,94,.1)', color: '#22c55e', label: 'Product Received' },
-            delivered: { bg: 'rgba(34,197,94,.1)', color: '#22c55e', label: 'Delivered' },
-            cancelled: { bg: 'rgba(239,68,68,.1)', color: '#ef4444', label: 'Cancelled' },
+    /* ── Panel switching ── */
+    function showPanel(id, btn) {
+
+        document.querySelectorAll('.panel').forEach(p => {
+            p.classList.remove('active');
+        });
+
+        document.querySelectorAll('.nav-btn').forEach(b => {
+            b.classList.remove('active');
+        });
+
+        document.getElementById('panel-' + id)
+            .classList.add('active');
+
+        btn.classList.add('active');
+    }
+
+    /* ── Toggle helper ── */
+    function toggleEl(id) {
+
+        const el = document.getElementById(id);
+
+        el.style.display =
+            el.style.display === 'none'
+                ? 'block'
+                : 'none';
+    }
+
+    /* ── STATUS COLORS ── */
+    const statusStyles = {
+
+        pending: {
+            bg: 'rgba(245,158,11,.1)',
+            color: '#f59e0b',
+            label: 'Pending'
+        },
+
+        preparing: {
+            bg: 'rgba(59,130,246,.1)',
+            color: '#3b82f6',
+            label: 'Preparing'
+        },
+
+        completed: {
+            bg: 'rgba(34,197,94,.1)',
+            color: '#22c55e',
+            label: 'Completed'
+        },
+
+        cancelled: {
+            bg: 'rgba(239,68,68,.1)',
+            color: '#ef4444',
+            label: 'Cancelled'
+        },
+    };
+
+    /* ── OPEN ORDER MODAL ── */
+    function openOrderModal(
+        id,
+        date,
+        status,
+        subtotal,
+        total,
+        payment,
+        image,
+        product,
+        qty,
+        name,
+        email,
+        phone,
+        address,
+        cancelUrl
+    ) {
+
+        const s = statusStyles[status.toLowerCase()] || {
+            bg: '#f0e4d0',
+            color: '#7a5c3e',
+            label: status
         };
 
-        function openOrderModal(id, date, status, subtotal, total, payment, image, product, qty, name, email, phone, address) {
-            const s = statusStyles[status.toLowerCase()] || { bg: '#f0e4d0', color: '#7a5c3e', label: status };
+        document.getElementById('mOrderId').innerText =
+            '#ORDER-' + id;
 
-            document.getElementById('mOrderId').innerText = '#ORDER-' + id;
-            document.getElementById('mDate').innerText = date;
-            document.getElementById('mPayment').innerText = payment;
-            document.getElementById('mSubtotal').innerText = '₱' + subtotal;
-            document.getElementById('mTotal').innerText = '₱' + parseFloat(total.replace(/,/g, '')).toFixed(2);
-            document.getElementById('mImg').src = image;
-            document.getElementById('mProduct').innerText = product;
-            document.getElementById('mQty').innerText = qty;
-            document.getElementById('mName').innerText = name;
-            document.getElementById('mEmail').innerText = email;
-            document.getElementById('mPhone').innerText = phone;
-            document.getElementById('mAddress').innerText = address;
+        document.getElementById('mDate').innerText =
+            date;
 
-            document.getElementById('mStatus').innerHTML =
-                `<span style="background:${s.bg};color:${s.color};padding:6px 14px;border-radius:999px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;">${s.label}</span>`;
+        document.getElementById('mPayment').innerText =
+            payment;
 
-            document.getElementById('orderModal').style.display = 'flex';
+        document.getElementById('mSubtotal').innerText =
+            '₱' + subtotal;
+
+        document.getElementById('mTotal').innerText =
+            '₱' + parseFloat(total.replace(/,/g, '')).toFixed(2);
+
+        document.getElementById('mImg').src =
+            image;
+
+        document.getElementById('mProduct').innerText =
+            product;
+
+        document.getElementById('mQty').innerText =
+            qty;
+
+        document.getElementById('mName').innerText =
+            name;
+
+        document.getElementById('mEmail').innerText =
+            email;
+
+        document.getElementById('mPhone').innerText =
+            phone;
+
+        document.getElementById('mAddress').innerText =
+            address;
+
+        document.getElementById('mStatus').innerHTML = `
+            <span style="
+                background:${s.bg};
+                color:${s.color};
+                padding:6px 14px;
+                border-radius:999px;
+                font-size:12px;
+                font-weight:700;
+                text-transform:uppercase;
+                letter-spacing:.05em;
+            ">
+                ${s.label}
+            </span>
+        `;
+
+        /* REMOVE OLD BUTTON */
+        document.getElementById('cancelOrderContainer')
+            .innerHTML = '';
+
+        /* SHOW CANCEL ONLY IF PENDING */
+        if (status.toLowerCase() === 'pending') {
+
+            document.getElementById('cancelOrderContainer')
+                .innerHTML = `
+                    <a
+                        href="${cancelUrl}"
+                        onclick="return confirm('Are you sure you want to cancel this order?')"
+                        style="
+                            display:block;
+                            width:100%;
+                            margin-top:18px;
+                            background:#ef4444;
+                            color:#fff;
+                            text-align:center;
+                            padding:14px;
+                            border-radius:14px;
+                            font-size:14px;
+                            font-weight:600;
+                            text-decoration:none;
+                            transition:.2s;
+                        "
+                        onmouseover="this.style.background='#dc2626'"
+                        onmouseout="this.style.background='#ef4444'"
+                    >
+                        Cancel Order
+                    </a>
+                `;
         }
 
-        function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+        document.getElementById('orderModal').style.display =
+            'flex';
+    }
 
-        /* ── Geolocation ── */
-        async function useMyLocation() {
-            if (!navigator.geolocation) return alert('Geolocation not supported.');
-            navigator.geolocation.getCurrentPosition(async pos => {
+    /* ── CLOSE MODAL ── */
+    function closeModal() {
+
+        document.getElementById('orderModal').style.display =
+            'none';
+    }
+
+    /* ── GEOLOCATION ── */
+    async function useMyLocation() {
+
+        if (!navigator.geolocation) {
+            return alert('Geolocation not supported.');
+        }
+
+        navigator.geolocation.getCurrentPosition(
+            async pos => {
+
                 try {
-                    const r = await fetch(`https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`);
+
+                    const r = await fetch(
+                        `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${pos.coords.latitude}&lon=${pos.coords.longitude}`
+                    );
+
                     const d = await r.json();
-                    document.querySelector('#addressForm textarea[name="address"]').value = d.display_name || '';
-                } catch { alert('Could not fetch address.'); }
-            }, () => alert('Location permission denied.'));
-        }
 
-        /* ── Auto-open panel from session (e.g. after address save) ── */
-        @if(session('status') === 'address-updated')
-            document.addEventListener('DOMContentLoaded', () => {
-                const btn = document.querySelector('.nav-btn:nth-child(5)');
-                showPanel('address', btn);
-            });
-        @endif
+                    document.querySelector(
+                        '#addressForm textarea[name="address"]'
+                    ).value = d.display_name || '';
 
+                } catch {
 
+                    alert('Could not fetch address.');
+                }
+            },
 
-    </script>
+            () => alert('Location permission denied.')
+        );
+    }
+
+</script>
+
+    
 
 </x-app-layout>

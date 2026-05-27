@@ -66,7 +66,9 @@ class OrderController extends Controller
             $item['price'] * $item['quantity'];
     }
 
-    
+    // 10% COMMISSION
+    $commission = $subtotal * 0.10;
+
     $total = $subtotal;
 
     foreach ($cart as $item) {
@@ -105,5 +107,18 @@ public function show(Order $order)
     }
 
     return view('orders.show', compact('order'));
+}
+public function cancel(Order $order)
+{
+    if (strtolower($order->status) !== 'pending') {
+
+        return back()->with('error', 'Only pending orders can be cancelled.');
+    }
+
+    $order->update([
+        'status' => 'cancelled'
+    ]);
+
+    return back()->with('success', 'Order cancelled successfully.');
 }
 }
