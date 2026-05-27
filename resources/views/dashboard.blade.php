@@ -560,7 +560,7 @@
                                 font-weight="800"
                                 fill="#0d0f14"
                             >
-                                {{ $totalOrders }}
+                                <span id="totalOrders">0</span>
                             </text>
 
                             <text
