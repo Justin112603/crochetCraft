@@ -107,6 +107,7 @@ Route::get('/admin/orders',
 Route::put('/admin/orders/{order}/status',
     [OrderManagementController::class, 'updateStatus'])
     ->name('admin.orders.status');
+Route::post('/cart/select', [CartController::class, 'selectItems'])->name('cart.select');
 //GCASH
 Route::get('/gcash-payment', function () {
     return view('gcash');

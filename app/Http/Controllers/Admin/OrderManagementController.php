@@ -19,18 +19,17 @@ class OrderManagementController extends Controller
     }
 
     public function updateStatus(Request $request, Order $order)
-    {
-        $request->validate([
-            'status' => 'required'
-        ]);
-
-        $order->update([
-            'status' => $request->status
-        ]);
-
-        return back()->with(
-            'success',
-            'Order status updated.'
-        );
+{
+    if ($order->status === 'cancelled') {
+        return back()->with('error', 'Cannot update a cancelled order.');
     }
+
+    $request->validate([
+        'status' => ['required', 'in:preparing,out_for_delivery,received'],
+    ]);
+
+    $order->update(['status' => $request->status]);
+
+    return back()->with('success', 'Order #' . $order->id . ' status updated successfully.');
+}
 }
