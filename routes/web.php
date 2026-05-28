@@ -12,10 +12,6 @@ use App\Http\Controllers\WithdrawalController;
 use Illuminate\Support\Facades\Hash;
 use App\Models\User;
 
-Route::get('/email/verify/pending', function () {
-    return view('auth.verify-email');
-})->name('verification.pending');
-
 Route::get('/', function () {
     return view('welcome');
 });
