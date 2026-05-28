@@ -190,7 +190,7 @@
 
                                 <form action="{{ route('cart.remove', $id) }}" method="POST">
                                     @csrf
-                                    @method('DELETE')
+                                    
                                     <button type="submit" class="remove-btn">Remove</button>
                                 </form>
                             </div>
