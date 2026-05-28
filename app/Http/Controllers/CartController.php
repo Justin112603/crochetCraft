@@ -2,105 +2,118 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\CartItem;
 use App\Models\Product;
 use Illuminate\Http\Request;
 
 class CartController extends Controller
 {
-    public function add(Product $product)
+    /* ── Helper: build cart array from DB (same shape as old session cart) ── */
+    private function getCart(): array
     {
-        $cart = session()->get('cart', []);
-
-        if ($product->stock <= 0) {
-            return back()->with('error', 'Product is out of stock.');
-        }
-
-        if (isset($cart[$product->id])) {
-            if ($cart[$product->id]['quantity'] >= $product->stock) {
-                return back()->with('error', 'Not enough stock available.');
-            }
-            $cart[$product->id]['quantity']++;
-        } else {
-            $cart[$product->id] = [
-                'id'       => $product->id,
-                'name'     => $product->name,
-                'price'    => $product->price,
-                'image'    => $product->image,
-                'quantity' => 1,
-            ];
-        }
-
-        session()->put('cart', $cart);
-
-        return back()->with('success', 'Product added to cart!');
+        return CartItem::with('product')
+            ->where('user_id', auth()->id())
+            ->get()
+            ->keyBy('product_id')
+            ->map(fn($item) => [
+                'id'       => $item->product_id,
+                'name'     => $item->product->name,
+                'price'    => $item->product->price,
+                'image'    => $item->product->image,
+                'quantity' => $item->quantity,
+            ])
+            ->toArray();
     }
 
     public function index()
     {
-        return view('cart');
+        $cart = $this->getCart();
+        return view('cart', compact('cart'));
+    }
+
+    public function add(Product $product)
+    {
+        if ($product->stock <= 0) {
+            return back()->with('error', 'Product is out of stock.');
+        }
+
+        $item = CartItem::firstOrCreate(
+            ['user_id' => auth()->id(), 'product_id' => $product->id],
+            ['quantity' => 0]
+        );
+
+        if ($item->quantity >= $product->stock) {
+            return back()->with('error', 'Not enough stock available.');
+        }
+
+        $item->increment('quantity');
+
+        return back()->with('success', 'Product added to cart!');
     }
 
     public function increase($id)
     {
-        $cart    = session()->get('cart', []);
         $product = Product::find($id);
 
         if (!$product) {
             return back()->with('error', 'Product not found.');
         }
 
-        if (isset($cart[$id])) {
-            if ($cart[$id]['quantity'] >= $product->stock) {
+        $item = CartItem::where('user_id', auth()->id())
+                        ->where('product_id', $id)
+                        ->first();
+
+        if ($item) {
+            if ($item->quantity >= $product->stock) {
                 return back()->with('error', 'Not enough stock available.');
             }
-            $cart[$id]['quantity']++;
+            $item->increment('quantity');
         }
-
-        session()->put('cart', $cart);
 
         return back();
     }
 
     public function decrease($id)
     {
-        $cart = session()->get('cart', []);
+        $item = CartItem::where('user_id', auth()->id())
+                        ->where('product_id', $id)
+                        ->first();
 
-        if (isset($cart[$id]) && $cart[$id]['quantity'] > 1) {
-            $cart[$id]['quantity']--;
+        if ($item) {
+            if ($item->quantity > 1) {
+                $item->decrement('quantity');
+            } else {
+                $item->delete(); // remove if quantity hits 0
+            }
         }
-
-        session()->put('cart', $cart);
 
         return back();
     }
 
     public function remove($id)
     {
-        $cart = session()->get('cart', []);
+        CartItem::where('user_id', auth()->id())
+                ->where('product_id', $id)
+                ->delete();
 
-        unset($cart[$id]);
-
-        // ALSO REMOVE FROM SELECTED IF REMOVED FROM CART
+        // also remove from selected
         $selected = session()->get('cart_selected', []);
         $selected = array_values(array_diff($selected, [$id]));
         session()->put('cart_selected', $selected);
 
-        session()->put('cart', $cart);
-
         return back()->with('success', 'Item removed from cart.');
     }
 
-    /* ── NEW: save selected item IDs to session ── */
     public function selectItems(Request $request)
-{
-    $selected = $request->input('selected_items', []);
+    {
+        $selected = $request->input('selected_items', []);
 
-    if (empty($selected)) {
-        return back()->with('error', 'Please select at least one item to checkout.');
+        if (empty($selected)) {
+            return back()->with('error', 'Please select at least one item to checkout.');
+        }
+
+        session()->put('cart_selected', $selected);
+
+        return redirect()->route('checkout');
     }
-
-    session()->put('cart_selected', $selected);
-
-    return redirect()->route('checkout');
-}
 }

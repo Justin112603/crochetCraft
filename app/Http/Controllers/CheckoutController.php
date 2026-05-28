@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Product;
 use App\Models\Order;
+use App\Models\CartItem;
 
 class CheckoutController extends Controller
 {
@@ -17,22 +18,27 @@ class CheckoutController extends Controller
 
     public function index()
 {
-    $cart     = session('cart', []);
     $selected = session('cart_selected', []);
 
-    // Only keep selected items
-    $selectedItems = array_filter(
-        $cart,
-        fn($item, $id) => in_array((string) $id, array_map('strval', $selected)),
-        ARRAY_FILTER_USE_BOTH
-    );
+    $cartItems = CartItem::with('product')
+        ->where('user_id', auth()->id())
+        ->whereIn('product_id', $selected)
+        ->get();
 
-    if (empty($selectedItems)) {
+    if ($cartItems->isEmpty()) {
         return redirect()->route('cart.index')
             ->with('error', 'Please select at least one item to checkout.');
     }
 
-    $subtotal = collect($selectedItems)->sum(fn($item) => $item['price'] * $item['quantity']);
+    $selectedItems = $cartItems->map(fn($item) => [
+        'id'       => $item->product_id,
+        'name'     => $item->product->name,
+        'price'    => $item->product->price,
+        'image'    => $item->product->image,
+        'quantity' => $item->quantity,
+    ])->toArray();
+
+    $subtotal = collect($selectedItems)->sum(fn($i) => $i['price'] * $i['quantity']);
     $total    = $subtotal + 50;
 
     return view('checkout', compact('selectedItems', 'subtotal', 'total'));
@@ -40,17 +46,14 @@ class CheckoutController extends Controller
 
 public function store(Request $request)
 {
-    $cart     = session('cart', []);
     $selected = session('cart_selected', []);
 
-    // Only process selected items
-    $selectedItems = array_filter(
-        $cart,
-        fn($item, $id) => in_array((string) $id, array_map('strval', $selected)),
-        ARRAY_FILTER_USE_BOTH
-    );
+    $cartItems = CartItem::with('product')
+        ->where('user_id', auth()->id())
+        ->whereIn('product_id', $selected)
+        ->get();
 
-    if (empty($selectedItems)) {
+    if ($cartItems->isEmpty()) {
         return redirect()->route('cart.index')
             ->with('error', 'Please select at least one item to checkout.');
     }
@@ -58,26 +61,21 @@ public function store(Request $request)
     $subtotal = 0;
 
     // 1. VALIDATE STOCK
-    foreach ($selectedItems as $item) {
-        $product = Product::find($item['id']);
-
-        if (!$product) {
+    foreach ($cartItems as $item) {
+        if (!$item->product) {
             return back()->with('error', 'Product not found.');
         }
-
-        if ($product->stock < $item['quantity']) {
-            return back()->with('error', $product->name . ' does not have enough stock.');
+        if ($item->product->stock < $item->quantity) {
+            return back()->with('error', $item->product->name . ' does not have enough stock.');
         }
-
-        $subtotal += $item['price'] * $item['quantity'];
+        $subtotal += $item->product->price * $item->quantity;
     }
 
     // 2. CALCULATE
     $commission    = $subtotal * 0.10;
-    $shipping      = 50;
-    $total         = $subtotal + $shipping;
+    $total         = $subtotal + 50;
     $paymentMethod = $request->input('payment_method', 'cod');
-    $firstItem     = array_values($selectedItems)[0];
+    $firstItem     = $cartItems->first();
 
     // 3. CREATE ORDER
     Order::create([
@@ -87,21 +85,19 @@ public function store(Request $request)
         'total'          => $total,
         'payment_method' => $paymentMethod,
         'status'         => 'pending',
-        'image'          => $firstItem['image'],
+        'image'          => $firstItem->product->image,
     ]);
 
-    // 4. DECREMENT STOCK for selected items only
-    foreach ($selectedItems as $item) {
-        $product = Product::find($item['id']);
-        $product->decrement('stock', $item['quantity']);
+    // 4. DECREMENT STOCK
+    foreach ($cartItems as $item) {
+        $item->product->decrement('stock', $item->quantity);
     }
 
-    // 5. REMOVE only selected items from cart, keep the rest
-    foreach ($selected as $id) {
-        unset($cart[$id]);
-    }
+    // 5. DELETE only selected items from DB — unselected ones STAY
+    CartItem::where('user_id', auth()->id())
+            ->whereIn('product_id', $selected)
+            ->delete();
 
-    session()->put('cart', $cart);
     session()->forget('cart_selected');
 
     return redirect()->route('shop')->with('success', 'Order placed successfully!');
