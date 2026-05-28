@@ -16,9 +16,9 @@ use App\Models\User;
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/', function () {
-    return view('welcome');
-})->name('welcome');
+Route::get('/shop', function () {
+    return view('shop');
+})->name('shop');
 
 Route::get('/dashboard', [DashboardController::class, 'index'])
     ->middleware(['auth'])
