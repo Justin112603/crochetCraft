@@ -131,7 +131,9 @@
         <div class="error-alert">✕ &nbsp;{{ session('error') }}</div>
     @endif
 
-    
+    @php
+        $selected = session('cart_selected', array_keys($cart)); // default: all selected
+    @endphp
 
     @if(count($cart) > 0)
 
