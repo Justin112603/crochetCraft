@@ -35,10 +35,8 @@ class RegisteredUserController extends Controller
         ]);
 
         event(new Registered($user)); // ← sends verification email
-        // LOGIN USER
-    Auth::login($user);
 
-           return redirect()->route('verification.notice')
+           return redirect()->route('verification.pending')
         ->with('email', $request->email);
 }
 }
