@@ -92,11 +92,15 @@ class CartController extends Controller
 
     /* ── NEW: save selected item IDs to session ── */
     public function selectItems(Request $request)
-    {
-        $selected = $request->input('selected_items', []);
+{
+    $selected = $request->input('selected_items', []);
 
-        session()->put('cart_selected', $selected);
-
-        return back();
+    if (empty($selected)) {
+        return back()->with('error', 'Please select at least one item to checkout.');
     }
+
+    session()->put('cart_selected', $selected);
+
+    return redirect()->route('checkout');
+}
 }
