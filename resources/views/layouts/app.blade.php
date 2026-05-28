@@ -439,21 +439,35 @@
 
             <div class="nav-actions">
 
-                {{-- CART --}}
-                <a href="{{ route('cart') }}" class="icon-btn">
-                    <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8"
-                        viewBox="0 0 24 24">
-                        <circle cx="9" cy="21" r="1"></circle>
-                        <circle cx="20" cy="21" r="1"></circle>
-                        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-                    </svg>
+                {{-- ✅ NEW — reads from database --}}
+@php
+    $cartCount = auth()->check()
+        ? \App\Models\CartItem::where('user_id', auth()->id())->sum('quantity')
+        : 0;
+@endphp
 
-                    @if(count(session('cart', [])) > 0)
-                        <span class="badge">
-                            {{ count(session('cart', [])) }}
-                        </span>
-                    @endif
-                </a>
+{{-- CART ICON WITH BADGE --}}
+<a href="{{ route('cart.index') }}" class="relative">
+    🛒
+    @if($cartCount > 0)
+        <span style="
+            position: absolute;
+            top: -6px;
+            right: -8px;
+            background: #c4693f;
+            color: white;
+            font-size: 10px;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            line-height: 1;
+        ">{{ $cartCount }}</span>
+    @endif
+</a>
 
                 {{-- USER --}}
                 <a href="{{ route('profile.edit') }}" class="icon-btn">
