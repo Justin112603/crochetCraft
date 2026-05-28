@@ -568,7 +568,7 @@
         $user = auth()->user();
         $orderCount = $user->orders()->count();
         $pendingCount = $user->orders()->where('status', 'pending')->count();
-        $totalSpent = $user->orders()->sum(\DB::raw('total + 50'));
+        $totalSpent = $user->orders()->sum(\DB::raw('total'));
         $commission = auth()->user()->orders()->whereNotNull('commission')->whereNull('withdrawn_at')->sum('commission');
         $recentOrders = $user->orders()->latest()->take(3)->get();
         $allOrders = $user->orders()->latest()->get();
