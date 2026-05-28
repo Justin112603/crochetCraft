@@ -108,6 +108,8 @@ Route::put('/admin/orders/{order}/status',
     [OrderManagementController::class, 'updateStatus'])
     ->name('admin.orders.status');
 Route::post('/cart/select', [CartController::class, 'selectItems'])->name('cart.select');
+// ✅ Correct
+Route::delete('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
 //GCASH
 Route::get('/gcash-payment', function () {
     return view('gcash');
