@@ -362,7 +362,6 @@
                     <input type="hidden" name="category"  value="{{ request('category') }}">
                     <input type="hidden" name="sort"      value="{{ request('sort') }}">
                     <input type="hidden" name="max_price" value="{{ request('max_price') }}">
-                    <span class="search-icon">🔍</span>
                     <input type="text"
                            name="search"
                            id="searchInput"
