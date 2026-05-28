@@ -151,4 +151,5 @@ Route::get('/dashboard/stats', [DashboardController::class, 'stats'])
     ->name('dashboard.stats');
     Route::get('/orders/{order}/cancel', [OrderController::class, 'cancel'])
     ->name('orders.cancel');
+    Route::patch('/orders/{order}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
 require __DIR__.'/auth.php';
