@@ -110,14 +110,18 @@ public function show(Order $order)
 }
 public function cancel(Order $order)
 {
-    if (strtolower($order->status) !== 'pending') {
+    // Only owner can cancel
+    if ($order->user_id !== auth()->id()) {
+        abort(403);
+    }
 
+    // Only pending orders can be cancelled
+    if (strtolower($order->status) !== 'pending') {
         return back()->with('error', 'Only pending orders can be cancelled.');
     }
 
-    $order->update([
-        'status' => 'cancelled'
-    ]);
+    $order->status = 'cancelled';
+    $order->save();
 
     return back()->with('success', 'Order cancelled successfully.');
 }
