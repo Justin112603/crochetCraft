@@ -447,7 +447,7 @@
 @endphp
 
 {{-- CART ICON WITH BADGE --}}
-<a href="{{ route('cart.index') }}" class="relative">
+<a href="{{ route('cart') }}" class="relative">
     🛒
     @if($cartCount > 0)
         <span style="
